@@ -1,2 +1,2 @@
 # galvanize_capstone
-Creating a predictive platfform for home prices using prophet 
+This creates a streamlit based machine learning model leveraging meta's Prophet model to evaluate predictive home prices on the East coast of the United States and compares historical changes during periods of national and interantional conflict. There are variances in the data and predictive values do have misgivings that cannot be predicted, such as black swan events or human nature. The model outlays home values with the option to view average interest rates and price changes likely imposed by the major conflicts previously described. 
