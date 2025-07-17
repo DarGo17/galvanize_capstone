@@ -4,4 +4,4 @@ numpy
 matplotlib
 Prophet
 joblib
-sklearn
+scikit-learn
