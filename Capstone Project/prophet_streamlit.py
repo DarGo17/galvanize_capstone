@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from prophet import Prophet
 import joblib
 
-# Load pre-trained Prophet model and historical data
+# ================= Load pre-trained Prophet model and historical data ====================
 model = joblib.load('prophet_model.pkl')
 combined_df = joblib.load('combined_df.pkl')  # Your combined_df with Date, price, MORTGAGE30US
 historical = combined_df[['Date', 'price', 'MORTGAGE30US']].dropna()
@@ -23,7 +23,7 @@ conflict_periods = {
 
 st.title("Fayetteville Home Prices Forecast with Conflict Period Insights")
 
-# --- User Inputs ---
+# ========================================== Inputs =======================================
 months_to_predict = st.slider("Select months into the future to forecast", 1, 120, 12)
 conflict_selected = st.selectbox("Select a Conflict Period to Highlight", list(conflict_periods.keys()))
 show_conflict = st.checkbox("Highlight Conflict Period on Graph", value=True)
@@ -46,7 +46,7 @@ start_date, end_date = pd.to_datetime(date_range[0]), pd.to_datetime(date_range[
 forecast_filtered = forecast[(forecast['ds'] >= start_date) & (forecast['ds'] <= end_date)]
 historical_filtered = historical[(historical['Date'] >= start_date) & (historical['Date'] <= end_date)]
 
-# --- Plot ---
+# ====================================== Plot =========================================
 fig, ax = plt.subplots(figsize=(12,6))
 
 # Plot historical data
@@ -64,7 +64,7 @@ if show_trend:
 if show_uncertainty:
     ax.fill_between(forecast_filtered['ds'], forecast_filtered['yhat_lower'], forecast_filtered['yhat_upper'], color='blue', alpha=0.2, label='Uncertainty Interval')
 
-# Highlight conflict period if toggled
+#  conflict period highlight
 if show_conflict:
     conflict_start, conflict_end = pd.to_datetime(conflict_periods[conflict_selected])
     ax.axvspan(conflict_start, conflict_end, color='orange', alpha=0.3, label='Selected Conflict Period')
@@ -81,13 +81,13 @@ if show_conflict:
         st.write(f"- Home Price Change: {price_change_pct:.2f}%")
         st.write(f"- Average Interest Rate: {avg_interest_rate:.2f}%")
 
-        # Annotate price change on graph
+        # price change on graph
         ax.annotate(f'{price_change_pct:.2f}% Price Change', xy=(conflict_end, conflict_prices.iloc[-1]),
                     xytext=(conflict_end, conflict_prices.max()),
                     arrowprops=dict(facecolor='black', shrink=0.05),
                     fontsize=10)
 
-# Optionally plot mortgage interest rate line
+# mortgage interest rate line
 if show_interest:
     ax2 = ax.twinx()
     ax2.plot(historical_filtered['Date'], historical_filtered['MORTGAGE30US'], 'r-', label='Mortgage Interest Rate')
@@ -103,6 +103,7 @@ plt.xticks(rotation=45)
 plt.tight_layout()
 st.pyplot(fig)
 
-# --- Download Forecast Data ---
+# ================================ Download Forecast Data ==========================================
 csv = forecast_filtered[['ds', 'yhat', 'yhat_lower', 'yhat_upper']].to_csv(index=False)
-st.download_button(label="Download Forecast as CSV", data=csv, file_name='forecast.csv', mime='text/csv')
+st.download_button(label="Download CSV", data=csv, file_name='prophet.csv', mime='text/csv')
+
